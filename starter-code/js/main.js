@@ -24,8 +24,18 @@ let currentScreen = "notes"; // "notes" | "settings"
 document.addEventListener("DOMContentLoaded", async () => {
   console.log("App started");
 
-  themes.applyTheme("light");
-  themes.applyFont("serif");
+const savedPrefs = storage.loadPreferences() || {};
+
+const initialTheme =
+  savedPrefs.theme === "system"
+    ? getSystemTheme()
+    : savedPrefs.theme || "light";
+
+themes.applyTheme(initialTheme);
+themes.applyFont(savedPrefs.font || "serif");
+
+pendingTheme = savedPrefs.theme || "light";
+pendingFont = savedPrefs.font || "sans";  
 
   ui.cacheElements();
 
@@ -126,40 +136,31 @@ const updateSidebarActive = () => {
 // SWITCH VIEW (SINGLE SOURCE OF TRUTH)
 // ===============================
 const switchView = (view) => {
-
   const contentGrid = document.querySelector(".content-grid");
 
-  // ===============================
   // 👉 SWITCH TO SETTINGS
-  // ===============================
   if (view === "settings") {
     currentScreen = "settings";
-
-    // 🔥 ADD THIS LINE (important)
     contentGrid.classList.add("settings-active");
-
     renderSettingsView();
     return;
   }
 
-  // ===============================
   // 👉 LEAVING SETTINGS → BACK TO NOTES
-  // ===============================
   if (currentScreen === "settings") {
+    document.querySelector("#appContent").innerHTML = notesViewHTML;
+    contentGrid.classList.remove("settings-active");
 
-  document.querySelector("#appContent").innerHTML = notesViewHTML;
+    // re-cache the recreated notes DOM
+    ui.cacheElements();
 
-  listenersAttached = false;
-  setupEventListeners();
+    setupEventListeners();
 
-  currentScreen = "notes";
+    currentScreen = "notes";
+    updateSidebarActive();
+  }
 
-  updateSidebarActive(); // 🔥 FIXES ARCHIVE / NAV ISSUE
-}
-
-  // ===============================
   // 👉 NORMAL NOTES VIEW
-  // ===============================
   currentView = view;
 
   updateSidebarActive();
@@ -170,7 +171,7 @@ const switchView = (view) => {
   ui.renderAllNotes(filtered, activeNoteId);
 
   if (activeNoteId) {
-    ui.renderNoteDetails(filtered.find(n => n.id === activeNoteId));
+    ui.renderNoteDetails(filtered.find((n) => n.id === activeNoteId));
   } else {
     ui.clearEditor();
   }
@@ -182,6 +183,10 @@ const switchView = (view) => {
 // ===============================
 const renderSettingsView = () => {
   const container = document.querySelector("#appContent");
+  const savedPrefs = storage.loadPreferences() || {};
+
+  pendingTheme = savedPrefs.theme || "light";
+  pendingFont = savedPrefs.font || "sans";
 
   container.innerHTML = `
     <div class="settings-layout">
@@ -212,13 +217,13 @@ const renderSettingsView = () => {
       <!-- RIGHT PANEL -->
       <section class="settings-content">
 
+        <!-- THEME PANEL -->
         <div id="theme" class="settings-panel active">
           <h2>Color Theme</h2>
           <p class="settings-desc">Choose your color theme:</p>
 
           <div class="settings-cards">
-
-            <div class="settings-card active" data-theme="light">
+            <div class="settings-card ${pendingTheme === "light" ? "active" : ""}" data-theme="light">
               <div class="card-left">
                 <img src="./assets/images/icon-sun.svg" />
                 <div>
@@ -226,10 +231,10 @@ const renderSettingsView = () => {
                   <p>Pick a clean and classic light theme</p>
                 </div>
               </div>
-              <div class="radio active"></div>
+              <div class="radio ${pendingTheme === "light" ? "active" : ""}"></div>
             </div>
 
-            <div class="settings-card" data-theme="dark">
+            <div class="settings-card ${pendingTheme === "dark" ? "active" : ""}" data-theme="dark">
               <div class="card-left">
                 <img src="./assets/images/icon-moon.svg" />
                 <div>
@@ -237,10 +242,10 @@ const renderSettingsView = () => {
                   <p>Select a sleek and modern dark theme</p>
                 </div>
               </div>
-              <div class="radio"></div>
+              <div class="radio ${pendingTheme === "dark" ? "active" : ""}"></div>
             </div>
 
-            <div class="settings-card" data-theme="system">
+            <div class="settings-card ${pendingTheme === "system" ? "active" : ""}" data-theme="system">
               <div class="card-left">
                 <img src="./assets/images/icon-system-theme.svg" />
                 <div>
@@ -248,56 +253,59 @@ const renderSettingsView = () => {
                   <p>Adapts to your device's theme</p>
                 </div>
               </div>
-              <div class="radio"></div>
+              <div class="radio ${pendingTheme === "system" ? "active" : ""}"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- FONT PANEL -->
+        <div id="font" class="settings-panel">
+          <h2>Font Theme</h2>
+          <p class="settings-desc">Choose your font:</p>
+
+          <div class="settings-cards">
+            <div class="settings-card ${pendingFont === "sans" ? "active" : ""}" data-font="sans">
+              <div class="card-left">
+                <div>
+                  <h4>Sans-serif</h4>
+                  <p>Clean and modern</p>
+                </div>
+              </div>
             </div>
 
-          </div>
+            <div class="settings-card ${pendingFont === "serif" ? "active" : ""}" data-font="serif">
+              <div class="card-left">
+                <div>
+                  <h4>Serif</h4>
+                  <p>Classic and elegant</p>
+                </div>
+              </div>
+            </div>
 
-          <div class="settings-footer">
-            <button class="primary-btn" id="applySettingsBtn">
-              Apply Changes
-            </button>
+            <div class="settings-card ${pendingFont === "mono" ? "active" : ""}" data-font="mono">
+              <div class="card-left">
+                <div>
+                  <h4>Monospace</h4>
+                  <p>Technical style</p>
+                </div>
+              </div>
+            </div>
           </div>
+        </div>
 
+        <!-- PASSWORD PANEL -->
+        <div id="password" class="settings-panel">
+          <h2>Change Password</h2>
+          <p class="settings-desc">This section is placeholder for now.</p>
+        </div>
+
+        <div class="settings-footer">
+          <button class="primary-btn" id="applySettingsBtn">
+            Apply Changes
+          </button>
         </div>
 
       </section>
-    </div>
-
-   <div id="font" class="settings-panel">
-    <h2>Font Theme</h2>
-    <p class="settings-desc">Choose your font:</p>
-
-    <div class="settings-cards">
-
-        <div class="settings-card" data-font="sans">
-        <div class="card-left">
-            <div>
-            <h4>Sans-serif</h4>
-            <p>Clean and modern</p>
-            </div>
-        </div>
-        </div>
-
-        <div class="settings-card" data-font="serif">
-        <div class="card-left">
-            <div>
-            <h4>Serif</h4>
-            <p>Classic and elegant</p>
-            </div>
-        </div>
-        </div>
-
-        <div class="settings-card" data-font="mono">
-        <div class="card-left">
-            <div>
-            <h4>Monospace</h4>
-            <p>Technical style</p>
-            </div>
-        </div>
-        </div>
-
-    </div>
     </div>
   `;
 
@@ -306,7 +314,7 @@ const renderSettingsView = () => {
 
 
 // ===============================
-// SETTINGS LISTENERS (FULL FIXED)
+// SETTINGS LISTENERS
 // ===============================
 let pendingTheme = "light";
 let pendingFont = "sans";
@@ -318,109 +326,92 @@ const getSystemTheme = () => {
 };
 
 const setupSettingsListeners = () => {
+  console.log("SETTINGS LISTENERS ATTACHED");
 
-    console.log("SETTINGS LISTENERS ATTACHED");
+  const container = document.querySelector(".settings-layout");
+  if (!container) return;
 
-  // ===============================
-  // LEFT MENU (Theme / Font switching)
-  // ===============================
-  document.querySelectorAll(".settings-item").forEach(btn => {
-    btn.addEventListener("click", () => {
+  container.addEventListener("click", (e) => {
+    // ===============================
+    // LEFT MENU (Theme / Font switching)
+    // ===============================
+    const menuBtn = e.target.closest(".settings-item[data-section]");
+    if (menuBtn) {
+      const section = menuBtn.dataset.section;
 
-      const section = btn.dataset.section;
+      container.querySelectorAll(".settings-item").forEach((btn) => {
+        btn.classList.remove("active");
+      });
+      menuBtn.classList.add("active");
 
-      // highlight menu
-      document.querySelectorAll(".settings-item").forEach(b =>
-        b.classList.remove("active")
-      );
-      btn.classList.add("active");
-
-      // switch panels safely
-      document.querySelectorAll(".settings-panel").forEach(p =>
-        p.classList.remove("active")
-      );
-
-      const panel = document.getElementById(section);
-      if (panel) panel.classList.add("active");
-    });
-  });
-
-
-  // ===============================
-  // THEME SELECTION
-  // ===============================
- const themeContainer = document.querySelector(".settings-cards");
-
-if (themeContainer) {
-  themeContainer.addEventListener("click", (e) => {
-
-    const card = e.target.closest("[data-theme]");
-    if (!card) return;
-
-    pendingTheme = card.dataset.theme;
-
-    document.querySelectorAll("[data-theme]").forEach(c => {
-      c.classList.remove("active");
-      c.querySelector(".radio")?.classList.remove("active");
-    });
-
-    card.classList.add("active");
-    card.querySelector(".radio")?.classList.add("active");
-
-    console.log("Theme selected:", pendingTheme);
-  });
-}
-
-
-  // ===============================
-  // FONT SELECTION
-  // ===============================
-  document.querySelectorAll("[data-font]").forEach(card => {
-    card.addEventListener("click", () => {
-
-      pendingFont = card.dataset.font;
-
-      document.querySelectorAll("[data-font]").forEach(c => {
-        c.classList.remove("active");
+      container.querySelectorAll(".settings-panel").forEach((panel) => {
+        panel.classList.remove("active");
       });
 
-      card.classList.add("active");
-    });
-  });
-
-
-  // ===============================
-  // APPLY BUTTON
-  // ===============================
- const applyBtn = document.querySelector("#applySettingsBtn");
-
-if (applyBtn) {
-  applyBtn.addEventListener("click", () => {
-
-    console.log("APPLY CLICKED"); // 🔥 MUST SHOW
-
-    let finalTheme = pendingTheme;
-
-    if (pendingTheme === "system") {
-      finalTheme = window.matchMedia("(prefers-color-scheme: dark)").matches
-        ? "dark"
-        : "light";
+      const panel = container.querySelector(`#${section}`);
+      if (panel) panel.classList.add("active");
+      return;
     }
 
-    console.log("FINAL THEME:", finalTheme);
+    // ===============================
+    // THEME SELECTION
+    // ===============================
+    const themeCard = e.target.closest(".settings-card[data-theme]");
+    if (themeCard) {
+      pendingTheme = themeCard.dataset.theme;
 
-    themes.applyTheme(finalTheme);
+      container.querySelectorAll(".settings-card[data-theme]").forEach((card) => {
+        card.classList.remove("active");
+        card.querySelector(".radio")?.classList.remove("active");
+      });
 
-    console.log(
-      "AFTER APPLY:",
-      document.documentElement.getAttribute("data-theme")
-    );
+      themeCard.classList.add("active");
+      themeCard.querySelector(".radio")?.classList.add("active");
 
-    const prefs = storage.loadPreferences() || {};
-    prefs.theme = pendingTheme;
-    storage.savePreferences(prefs);
+      console.log("Theme selected:", pendingTheme);
+      return;
+    }
+
+    // ===============================
+    // FONT SELECTION
+    // ===============================
+    const fontCard = e.target.closest(".settings-card[data-font]");
+    if (fontCard) {
+      pendingFont = fontCard.dataset.font;
+
+      container.querySelectorAll(".settings-card[data-font]").forEach((card) => {
+        card.classList.remove("active");
+      });
+
+      fontCard.classList.add("active");
+
+      console.log("Font selected:", pendingFont);
+      return;
+    }
+
+    // ===============================
+    // APPLY BUTTON
+    // ===============================
+    const applyBtn = e.target.closest("#applySettingsBtn");
+    if (applyBtn) {
+      const finalTheme =
+        pendingTheme === "system"
+          ? getSystemTheme()
+          : pendingTheme;
+
+      themes.applyTheme(finalTheme);
+      themes.applyFont(pendingFont);
+
+      const currentPrefs = storage.loadPreferences() || {};
+      currentPrefs.theme = pendingTheme;
+      currentPrefs.font = pendingFont;
+      storage.savePreferences(currentPrefs);
+
+      console.log("Applied:", currentPrefs);
+      console.log("Current theme attr:", document.documentElement.getAttribute("data-theme"));
+      console.log("Current font attr:", document.documentElement.getAttribute("data-font"));
+    }
   });
-}
 };
 
 
