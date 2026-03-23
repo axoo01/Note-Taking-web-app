@@ -63,14 +63,15 @@ export const renderNoteDetails = (note) => {
   elements.noteContent.innerHTML = note.content.replace(/\n/g, "<br>");
 
   const archiveText = document.querySelector("#archiveText");
+  const archiveIcon = document.querySelector("#archiveIcon");
 
-if (archiveText) {
-  if (note.isArchived) {
-    archiveText.textContent = "Restore Note";
-  } else {
-    archiveText.textContent = "Archive Note";
-  }
-}
+    if (note.isArchived) {
+      if (archiveText) archiveText.textContent = "Restore Note";
+      if (archiveIcon) archiveIcon.src = "./assets/images/icon-restore.svg"; 
+    } else {
+      if (archiveText) archiveText.textContent = "Archive Note";
+      if (archiveIcon) archiveIcon.src = "./assets/images/icon-archive.svg";
+    }
 };
 
 // Clear editor for new note
