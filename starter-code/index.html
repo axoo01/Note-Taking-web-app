@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light" data-font="serif">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/png" sizes="32x32" href="./assets/images/favicon-32x32.png" />
+  <link rel="stylesheet" href="./css/styles.css" />
+  <title>Note Taking web app</title>
+</head>
+
+<body>
+  <div class="app-shell">
+
+    <!-- ================= SIDEBAR ================= -->
+    <aside class="sidebar">
+      <div class="sidebar__brand">
+        <img src="./assets/images/logo.svg" alt="Notes logo" class="logo" />
+      </div>
+
+      <!-- NAV -->
+      <nav class="sidebar__nav" aria-label="Primary navigation">
+        <button class="nav-item nav-item--active" type="button">
+          <span class="nav-item__left">
+            <img src="./assets/images/icon-home.svg" alt="" />
+            <span>All Notes</span>
+          </span>
+        </button>
+
+        <button class="nav-item" type="button">
+          <span class="nav-item__left">
+            <img src="./assets/images/icon-archive.svg" alt="" />
+            <span>Archived Notes</span>
+          </span>
+        </button>
+      </nav>
+
+      <!-- TAGS -->
+      <section class="sidebar__tags">
+        <h2>Tags</h2>
+
+        <div class="tag-links">
+          <button class="tag-link" data-tag="Cooking"><img src="./assets/images/icon-tag.svg" /><span>Cooking</span></button>
+          <button class="tag-link" data-tag="Dev"><img src="./assets/images/icon-tag.svg" /><span>Dev</span></button>
+          <button class="tag-link" data-tag="Fitness"><img src="./assets/images/icon-tag.svg" /><span>Fitness</span></button>
+          <button class="tag-link" data-tag="Health"><img src="./assets/images/icon-tag.svg" /><span>Health</span></button>
+          <button class="tag-link" data-tag="Personal"><img src="./assets/images/icon-tag.svg" /><span>Personal</span></button>
+          <button class="tag-link" data-tag="React"><img src="./assets/images/icon-tag.svg" /><span>React</span></button>
+          <button class="tag-link" data-tag="Recipes"><img src="./assets/images/icon-tag.svg" /><span>Recipes</span></button>
+          <button class="tag-link" data-tag="Shopping"><img src="./assets/images/icon-tag.svg" /><span>Shopping</span></button>
+          <button class="tag-link" data-tag="Travel"><img src="./assets/images/icon-tag.svg" /><span>Travel</span></button>
+          <button class="tag-link" data-tag="TypeScript"><img src="./assets/images/icon-tag.svg" /><span>TypeScript</span></button>
+        </div>
+      </section>
+    </aside>
+
+    <!-- ================= MAIN ================= -->
+    <main class="main-area">
+
+      <!-- TOPBAR -->
+      <header class="topbar">
+        <h1>All Notes</h1>
+
+        <div class="topbar__actions">
+          <label class="searchbar">
+            <img src="./assets/images/icon-search.svg" />
+            <input type="search" id="searchInput" placeholder="Search by title, content, or tags..." />
+          </label>
+
+          <button id="settingsBtn" class="settings-btn">
+            <img src="./assets/images/icon-settings.svg" />
+          </button>
+        </div>
+      </header>
+
+      <!-- CONTENT -->
+      <div class="content-grid" id="appContent">
+
+        <!-- NOTES LIST -->
+        <section class="notes-column">
+          <button class="new-note-btn" id="createNoteBtn">+ Create New Note</button>
+
+          <div class="notes-list" id="notesList">
+            <!-- JS renders notes here -->
+          </div>
+        </section>
+
+        <!-- NOTE DETAILS -->
+        <section class="details-column">
+          <div class="details-column__inner">
+
+            <h2 id="noteTitle" contenteditable="true"></h2>
+
+            <div class="note-meta">
+              <div class="note-meta__row">
+                <span>Tags</span>
+                <span id="noteTags" contenteditable="true"></span>
+              </div>
+
+              <div class="note-meta__row">
+                <span>Last edited</span>
+                <span id="noteDate"></span>
+              </div>
+            </div>
+
+            <div id="noteContent" class="note-body" contenteditable="true"></div>
+
+            <div class="details-footer">
+              <button id="saveNoteBtn" class="primary-btn">Save Note</button>
+              <button class="secondary-btn">Cancel</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- ACTIONS -->
+        <aside class="actions-column">
+          <button id="archiveBtn" class="side-action-btn">
+            <img src="./assets/images/icon-archive.svg" />
+            <span id="archiveText">Archive Note</span>
+          </button>
+
+          <button id="deleteBtn" class="side-action-btn">
+            <img src="./assets/images/icon-delete.svg" />
+            <span>Delete Note</span>
+          </button>
+        </aside>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- ================= MODAL ================= -->
+<div id="modalOverlay" class="modal hidden">
+  <div class="modal-box">
+    <div class="modal-header">
+      <span id="modalTitle"></span>
+    </div>
+
+    <p id="modalMessage"></p>
+
+    <div class="modal-actions">
+      <button id="modalCancel" class="secondary-btn">Cancel</button>
+      <button id="modalConfirm" class="danger-btn">Confirm</button>
+    </div>
+  </div>
+</div>
+
+<!-- ================= TOAST ================= -->
+<div id="toast" class="toast hidden">
+  <span>
+    <img src="./assets/images/Check circle.svg" alt="Checked icon">
+    <span id="toastMessage"></span>
+  </span>
+  <span>
+    <button id="toastLink"></button>
+    <button id="toastClose">✕</button>
+  </span>
+</div>
+
+  <script type="module" src="./js/main.js"></script>
+</body>
+</html>
