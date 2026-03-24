@@ -225,7 +225,9 @@ const renderSettingsView = () => {
           <div class="settings-cards">
             <div class="settings-card ${pendingTheme === "light" ? "active" : ""}" data-theme="light">
               <div class="card-left">
+                <div class="card-icon">
                 <img src="./assets/images/icon-sun.svg" />
+                </div>
                 <div>
                   <h4>Light Mode</h4>
                   <p>Pick a clean and classic light theme</p>
@@ -236,7 +238,9 @@ const renderSettingsView = () => {
 
             <div class="settings-card ${pendingTheme === "dark" ? "active" : ""}" data-theme="dark">
               <div class="card-left">
+              <div class="card-icon">
                 <img src="./assets/images/icon-moon.svg" />
+                </div>
                 <div>
                   <h4>Dark Mode</h4>
                   <p>Select a sleek and modern dark theme</p>
@@ -247,7 +251,9 @@ const renderSettingsView = () => {
 
             <div class="settings-card ${pendingTheme === "system" ? "active" : ""}" data-theme="system">
               <div class="card-left">
+              <div class="card-icon">
                 <img src="./assets/images/icon-system-theme.svg" />
+                </div>
                 <div>
                   <h4>System</h4>
                   <p>Adapts to your device's theme</p>
@@ -266,6 +272,9 @@ const renderSettingsView = () => {
           <div class="settings-cards">
             <div class="settings-card ${pendingFont === "sans" ? "active" : ""}" data-font="sans">
               <div class="card-left">
+                <div class="card-icon">
+                  <img src="./assets/images/icon-font-sans-serif.svg" />
+                </div>
                 <div>
                   <h4>Sans-serif</h4>
                   <p>Clean and modern</p>
@@ -275,6 +284,9 @@ const renderSettingsView = () => {
 
             <div class="settings-card ${pendingFont === "serif" ? "active" : ""}" data-font="serif">
               <div class="card-left">
+                <div class="card-icon">
+                    <img src="./assets/images/icon-font-serif.svg" />
+                </div>
                 <div>
                   <h4>Serif</h4>
                   <p>Classic and elegant</p>
@@ -284,6 +296,9 @@ const renderSettingsView = () => {
 
             <div class="settings-card ${pendingFont === "mono" ? "active" : ""}" data-font="mono">
               <div class="card-left">
+                <div class="card-icon">
+                  <img src="./assets/images/icon-font-monospace.svg" />
+                </div>
                 <div>
                   <h4>Monospace</h4>
                   <p>Technical style</p>
