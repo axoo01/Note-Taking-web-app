@@ -68,6 +68,9 @@ html[data-theme="dark"] {
   --primary: var(--blue-500);
   --primary-hover: var(--blue-700);
 }
+html[data-theme="dark"] .logo{
+  content: url(../assets/images/darkmode-logo.svg);
+}
 
 html[data-font="sans"] {
   font-family: var(--font-sans);
@@ -745,6 +748,24 @@ input:focus-visible,
   display: flex;
   justify-content: flex-end;
   margin-top: 2rem;
+}
+
+
+.card-icon {
+  width: 35px;
+  height: 35px;
+  background: white;              
+  border-radius: 10px;
+  border: 1px solid var(--border-color);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.card-icon img {
+  width: 22px;
+  height: 22px;
 }
 
 
