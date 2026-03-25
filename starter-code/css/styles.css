@@ -48,7 +48,10 @@
   --text-primary: var(--neutral-950);
   --text-secondary: var(--neutral-600);
   --text-muted: var(--neutral-500);
-  --tag-bg: var(--neutral-100);
+  --tag-bg: var(--neutral-200);
+  --tag-bg-active: var(--neutral-200);
+  --secondary-btn: var(--neutral-100);
+
   --primary: var(--blue-500);
   --primary-hover: var(--blue-700);
   --secondary-hover: var(--neutral-200);
@@ -63,10 +66,13 @@ html[data-theme="dark"] {
   --text-secondary: var(--neutral-300);
   --text-muted: var(--neutral-400);
 
-  --tag-bg: red;
+  --tag-bg: var(--neutral-700);
+  --tag-bg-active: var(--neutral-600);
 
   --primary: var(--blue-500);
   --primary-hover: var(--blue-700);
+  --secondary-btn: var(--neutral-800);
+  --secondary-hover: var(--neutral-700);
 }
 
 html[data-font="sans"] {
@@ -79,6 +85,9 @@ html[data-font="serif"] {
 
 html[data-font="mono"] {
   font-family: var(--font-mono);
+}
+html[data-theme="dark"] .card-icon img {
+  filter: brightness(0) invert(1);
 }
 
 * {
@@ -362,6 +371,9 @@ button {
   border-radius: 10px;
   border-bottom-color: transparent;
 }
+.note-card--active .tag-badge{
+  background-color: var(--tag-bg-active);
+}
 
 .note-card h3 {
   margin: 0 0 0.75rem;
@@ -382,9 +394,10 @@ button {
   min-height: 24px;
   padding: 0.15rem 0.45rem;
   border-radius: 6px;
-  background: var(--neutral-200);
-  color: var(--text-secondary);
+  background: var(--tag-bg);
+  color: var(--text-primary);
   font-size: 0.875rem;
+  font-weight: 300;
 }
 
 .note-card p {
@@ -488,7 +501,7 @@ button {
 }
 
 .secondary-btn {
-  background: var(--neutral-100);
+  background: var(--secondary-btn);
   color: var(--text-secondary);
 }
 
@@ -516,6 +529,7 @@ button {
   align-items: center;
   gap: 0.75rem;
   text-align: left;
+  color: var(--text-primary);
 }
 
 .side-action-btn + .side-action-btn {

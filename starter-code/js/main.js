@@ -140,11 +140,20 @@ const switchView = (view) => {
 
   // 👉 SWITCH TO SETTINGS
   if (view === "settings") {
-    currentScreen = "settings";
-    contentGrid.classList.add("settings-active");
-    renderSettingsView();
-    return;
-  }
+  currentScreen = "settings";
+
+  contentGrid.classList.add("settings-active");
+
+  renderSettingsView();
+
+  // 🔥 FIX ICON RESET BUG
+  const currentTheme =
+    document.documentElement.getAttribute("data-theme") || "light";
+
+  themes.applyTheme(currentTheme);
+
+  return;
+}
 
   // 👉 LEAVING SETTINGS → BACK TO NOTES
   if (currentScreen === "settings") {
@@ -193,26 +202,44 @@ const renderSettingsView = () => {
 
       <!-- LEFT MENU -->
       <aside class="settings-menu">
-        <button class="settings-item active" data-section="theme">
-          <img src="./assets/images/icon-sun.svg" class="settings-icon"/>
-          Color Theme
-        </button>
 
-        <button class="settings-item" data-section="font">
-          <img src="./assets/images/icon-font.svg" class="settings-icon"/>
-          Font Theme
-        </button>
+  <button class="settings-item active" data-section="theme">
+    <img 
+      src="./assets/images/icon-sun.svg" 
+      class="settings-icon theme-icon" 
+      data-icon="icon-sun"
+    />
+    Color Theme
+  </button>
 
-        <button class="settings-item" data-section="password">
-          <img src="./assets/images/icon-lock.svg" class="settings-icon"/>
-          Change Password
-        </button>
+  <button class="settings-item" data-section="font">
+    <img 
+      src="./assets/images/icon-font.svg" 
+      class="settings-icon theme-icon" 
+      data-icon="icon-font"
+    />
+    Font Theme
+  </button>
 
-        <button class="settings-item">
-          <img src="./assets/images/icon-logout.svg" class="settings-icon"/>
-          Logout
-        </button>
-      </aside>
+  <button class="settings-item" data-section="password">
+    <img 
+      src="./assets/images/icon-lock.svg" 
+      class="settings-icon theme-icon" 
+      data-icon="icon-lock"
+    />
+    Change Password
+  </button>
+
+  <button class="settings-item">
+    <img 
+      src="./assets/images/icon-logout.svg" 
+      class="settings-icon theme-icon" 
+      data-icon="icon-logout"
+    />
+    Logout
+  </button>
+
+</aside>
 
       <!-- RIGHT PANEL -->
       <section class="settings-content">
@@ -311,6 +338,7 @@ const renderSettingsView = () => {
 
   setupSettingsListeners();
 };
+
 
 
 // ===============================
