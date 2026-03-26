@@ -14,8 +14,8 @@ let searchQuery = "";        // used for final notes
 // store original notes UI so we can restore it
 let notesViewHTML = "";
 
-// UI screen state (notes vs settings)
-let currentScreen = "notes"; // "notes" | "settings"
+
+let currentScreen = "notes"; // Ui screen state"notes" | "settings"
 
 
 // ===============================
@@ -39,7 +39,6 @@ pendingFont = savedPrefs.font || "sans";
 
   ui.cacheElements();
 
-  // Load notes from localStorage
   notes = storage.loadNotes();
 
   // If empty → load from data.json
@@ -55,7 +54,7 @@ pendingFont = savedPrefs.font || "sans";
     storage.saveNotes(notes);
   }
 
-  // Set first note as active
+
   const filtered = getFinalFilteredNotes();
   activeNoteId = filtered[0]?.id || null;
 
@@ -85,20 +84,20 @@ pendingFont = savedPrefs.font || "sans";
 const getFinalFilteredNotes = () => {
   let filtered = [...notes];
 
-  // 1️⃣ Archive filter
+  // Archive filtering basically notes supposed to be viewed
   filtered =
     currentView === "archived"
       ? filtered.filter(n => n.isArchived)
       : filtered.filter(n => !n.isArchived);
 
-  // 2️⃣ Tag filter
+  // Tag filter
   if (selectedTag) {
     filtered = filtered.filter(note =>
       note.tags.includes(selectedTag)
     );
   }
 
-  // 3️⃣ Search filter
+  // Search filter
   if (searchQuery.trim()) {
     const query = searchQuery.toLowerCase();
 
@@ -133,12 +132,12 @@ const updateSidebarActive = () => {
 
 
 // ===============================
-// SWITCH VIEW (SINGLE SOURCE OF TRUTH)
+// Swicthing VIEW 
 // ===============================
 const switchView = (view) => {
   const contentGrid = document.querySelector(".content-grid");
 
-  // 👉 SWITCH TO SETTINGS
+  // SWITCH TO SETTINGS
   if (view === "settings") {
   currentScreen = "settings";
 
@@ -146,7 +145,7 @@ const switchView = (view) => {
 
   renderSettingsView();
 
-  // 🔥 FIX ICON RESET BUG
+  
   const currentTheme =
     document.documentElement.getAttribute("data-theme") || "light";
 
@@ -155,7 +154,6 @@ const switchView = (view) => {
   return;
 }
 
-  // 👉 LEAVING SETTINGS → BACK TO NOTES
   if (currentScreen === "settings") {
     document.querySelector("#appContent").innerHTML = notesViewHTML;
     contentGrid.classList.remove("settings-active");
@@ -169,7 +167,7 @@ const switchView = (view) => {
     updateSidebarActive();
   }
 
-  // 👉 NORMAL NOTES VIEW
+  
   currentView = view;
 
   updateSidebarActive();
@@ -252,7 +250,9 @@ const renderSettingsView = () => {
           <div class="settings-cards">
             <div class="settings-card ${pendingTheme === "light" ? "active" : ""}" data-theme="light">
               <div class="card-left">
-                <img src="./assets/images/icon-sun.svg" />
+                <div class="card-icon">
+                  <img src="./assets/images/icon-sun.svg" class="theme-icon" data-icon="icon-sun"/>
+                </div>
                 <div>
                   <h4>Light Mode</h4>
                   <p>Pick a clean and classic light theme</p>
@@ -263,7 +263,9 @@ const renderSettingsView = () => {
 
             <div class="settings-card ${pendingTheme === "dark" ? "active" : ""}" data-theme="dark">
               <div class="card-left">
-                <img src="./assets/images/icon-moon.svg" />
+                <div class="card-icon">
+                  <img src="./assets/images/icon-moon.svg" class="theme-icon" data-icon="icon-moon"/>
+                </div>
                 <div>
                   <h4>Dark Mode</h4>
                   <p>Select a sleek and modern dark theme</p>
@@ -274,7 +276,9 @@ const renderSettingsView = () => {
 
             <div class="settings-card ${pendingTheme === "system" ? "active" : ""}" data-theme="system">
               <div class="card-left">
-                <img src="./assets/images/icon-system-theme.svg" />
+                <div class="card-icon">
+                  <img src="./assets/images/icon-systemTheme.svg" class="theme-icon" data-icon="icon-systemTheme"/>
+                </div>
                 <div>
                   <h4>System</h4>
                   <p>Adapts to your device's theme</p>

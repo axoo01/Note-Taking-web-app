@@ -96,7 +96,7 @@ export const showModal = ({ title, message, confirmText, color = "red" }) => {
   msgEl.textContent = message;
   confirmBtn.textContent = confirmText;
 
-  // color logic
+  
   confirmBtn.style.background =
     color === "red" ? "var(--red-500)" : "var(--blue-500)";
 

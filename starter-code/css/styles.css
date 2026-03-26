@@ -75,6 +75,10 @@ html[data-theme="dark"] {
   --secondary-hover: var(--neutral-700);
 }
 
+html[data-theme="dark"] .logo{
+  content: url("../assets/images/icon-logo-dark.svg");
+}
+
 html[data-font="sans"] {
   font-family: var(--font-sans);
 }
@@ -85,9 +89,6 @@ html[data-font="serif"] {
 
 html[data-font="mono"] {
   font-family: var(--font-mono);
-}
-html[data-theme="dark"] .card-icon img {
-  filter: brightness(0) invert(1);
 }
 
 * {
@@ -687,7 +688,7 @@ input:focus-visible,
 /** ------Right Panel-----*/
 .settings-content {
   padding: 2rem;
-  max-width: 620px;       /* 🎯 matches Figma content width */
+  max-width: 620px;       
 
 }
 
@@ -723,11 +724,25 @@ input:focus-visible,
   display: flex;
   align-items: center;
   gap: 1rem;
+  
+}
+.card-icon {
+  width: 35px;
+  height: 35px;
+  background: var(--surface-bg);
+  border: 1px solid var(--border-color);              
+  border-radius: 10px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.card-left img {
-  width: 24px;
+.card-icon img {
+  width: 22px;
+  height: 22px;
 }
+
 
 .card-left h4 {
   font-size: 1rem;
