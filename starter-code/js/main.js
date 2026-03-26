@@ -5,11 +5,11 @@ import * as themes from "./themes.js";
 // ===============================
 // GLOBAL STATE
 // ===============================
-let notes = [];              // all notes
-let activeNoteId = null;     // currently selected note
-let currentView = "all";     // "all" or "archived"
-let selectedTag = null;      // currently selected tag
-let searchQuery = "";        // used for final notes
+let notes = [];               
+let activeNoteId = null;     //stored app state in variables
+let currentView = "all";     
+let selectedTag = null;      
+let searchQuery = "";        
 
 // store original notes UI so we can restore it
 let notesViewHTML = "";
