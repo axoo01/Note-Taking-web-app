@@ -518,6 +518,8 @@ button {
   padding: 1.5rem 1rem;
   border-left: 1px solid var(--border-color);
   overflow-y: auto;
+  display: flex;
+  flex-direction: column;
 }
 
 .side-action-btn {
@@ -545,6 +547,20 @@ input:focus-visible,
   outline-offset: 2px;
 }
 
+
+.exportImport {
+  margin-top: auto;         
+
+  display: flex;
+  gap: 0.5rem;
+  justify-content: space-evenly;
+}
+
+.exportImport .primary-btn {
+             
+  font-size: 0.85rem;
+  padding: 0 0.5rem;
+}
 @media (max-width: 1100px) {
   body {
     height: auto;

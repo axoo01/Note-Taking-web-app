@@ -717,4 +717,108 @@ if (exportBtn) {
     console.log("Notes exported successfully");
   });
 }
+
+
+// ===============================
+// IMPORT NOTES
+// ===============================
+const importBtn = document.querySelector("#importBtn");
+const importInput = document.querySelector("#importInput");
+
+if (importBtn && importInput) {
+
+  // trigger file picker
+  importBtn.addEventListener("click", () => {
+    importInput.click();
+  });
+
+  // handle file selection
+  importInput.addEventListener("change", (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+
+    reader.onload = (e) => {
+  try {
+    const importedNotes = JSON.parse(e.target.result);
+
+    // ✅ Check if array
+    if (!Array.isArray(importedNotes)) {
+      alert("Invalid file format: expected an array of notes.");
+      return;
+    }
+
+    // ✅ Validate structure
+    const validNotes = importedNotes.filter(note =>
+      note.id &&
+      note.title &&
+      note.content !== undefined &&
+      Array.isArray(note.tags)
+    );
+
+    if (validNotes.length === 0) {
+      alert("No valid notes found in file.");
+      return;
+    }
+
+    // ✅ REMOVE DUPLICATES INSIDE FILE
+    const uniqueMap = new Map();
+    validNotes.forEach(note => {
+      if (!uniqueMap.has(note.id)) {
+        uniqueMap.set(note.id, note);
+      }
+    });
+
+    const uniqueNotes = Array.from(uniqueMap.values());
+
+    // ✅ CHECK AGAINST EXISTING NOTES
+    const existingIds = new Set(notes.map(n => n.id));
+
+    const newNotes = uniqueNotes.filter(note => !existingIds.has(note.id));
+    const duplicateNotes = uniqueNotes.filter(note => existingIds.has(note.id));
+
+    // ✅ HANDLE CASES
+    if (newNotes.length === 0 && duplicateNotes.length > 0) {
+      alert("All notes in this file already exist. No new notes were imported.");
+      return;
+    }
+
+    if (newNotes.length === 0) {
+      alert("No new notes to import.");
+      return;
+    }
+
+    // ✅ MERGE
+    notes = [...newNotes, ...notes];
+    storage.saveNotes(notes);
+
+    // ✅ REFRESH UI
+    const filtered = getFinalFilteredNotes();
+    activeNoteId = filtered[0]?.id || null;
+
+    ui.renderAllNotes(filtered, activeNoteId);
+
+    if (activeNoteId) {
+      ui.renderNoteDetails(notes.find(n => n.id === activeNoteId));
+    } else {
+      ui.clearEditor();
+    }
+
+    // ✅ SMART SUCCESS MESSAGE
+    if (duplicateNotes.length > 0) {
+      alert(`${newNotes.length} notes imported. ${duplicateNotes.length} duplicates skipped.`);
+    } else {
+      alert(`${newNotes.length} notes imported successfully.`);
+    }
+
+  } catch (error) {
+    console.error(error);
+    alert("Invalid JSON file. Please check the file format.");
+  }
+};
+
+    reader.readAsText(file);
+  });
+}
 };
