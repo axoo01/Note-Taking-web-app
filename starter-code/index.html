@@ -36,7 +36,7 @@
 
       <!-- TAGS -->
       <section class="sidebar__tags">
-        <h2>Tags</h2>
+        <h3>Tags</h3>
 
         <div class="tag-links">
           <button class="tag-link" data-tag="Cooking"><img src="./assets/images/icon-tag.svg" class="theme-icon" data-icon="icon-tag"/><span>Cooking</span></button>
@@ -50,6 +50,17 @@
           <button class="tag-link" data-tag="Travel"><img src="./assets/images/icon-tag.svg" class="theme-icon" data-icon="icon-tag"/><span>Travel</span></button>
           <button class="tag-link" data-tag="TypeScript"><img src="./assets/images/icon-tag.svg" class="theme-icon" data-icon="icon-tag"/><span>TypeScript</span></button>
         </div>
+
+        <h3>Categories</h3>
+        <div class="category-links">
+        <button class="category-link" data-category="Work">
+          <span>Work</span>
+        </button>
+
+        <button class="category-link" data-category="Personal">
+          <span>Personal</span>
+        </button>
+      </div>
       </section>
     </aside>
 
@@ -100,6 +111,17 @@
                 <span>Last edited</span>
                 <span id="noteDate"></span>
               </div>
+
+              <div class="note-meta__row">
+              <span class="note-meta__label">Category</span>
+              
+              <select id="noteCategory">
+                <option value="">No Category</option>
+                <option value="Work">Work</option>
+                <option value="Personal">Personal</option>
+              </select>
+            </div>
+
             </div>
 
             <div id="noteContent" class="note-body" contenteditable="true"></div>

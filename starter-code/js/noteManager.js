@@ -4,6 +4,7 @@ export class Note {
     this.title = title;
     this.content = content;
     this.tags = tags;
+    this.category = null;
     this.isArchived = false;
     this.lastEdited = new Date().toISOString();
     this.location = null;

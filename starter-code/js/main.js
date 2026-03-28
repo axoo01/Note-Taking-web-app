@@ -9,7 +9,9 @@ let notes = [];
 let activeNoteId = null;     //stored app state in variables
 let currentView = "all";     
 let selectedTag = null;      
-let searchQuery = "";        
+let searchQuery = "";   
+let categories = ["Work", "Personal"]; // starter
+let selectedCategory = null;     
 
 // store original notes UI so we can restore it
 let notesViewHTML = "";
@@ -17,7 +19,17 @@ let notesViewHTML = "";
 
 let currentScreen = "notes"; // Ui screen state"notes" | "settings"
 
-
+// ===============================
+// HELPERS
+// ===============================
+const normalizeTags = (tags) => {
+  return [...new Set(
+    tags
+      .map(t => t.trim().toLowerCase())
+      .filter(Boolean)
+      .map(t => t.charAt(0).toUpperCase() + t.slice(1))
+  )];
+};
 // ===============================
 // APP INITIALIZATION
 // ===============================
@@ -40,6 +52,11 @@ pendingFont = savedPrefs.font || "sans";
   ui.cacheElements();
 
   notes = storage.loadNotes();
+
+  notes = notes.map(note => ({
+  ...note,
+  tags: normalizeTags(note.tags)
+}));
 
   // If empty → load from data.json
   if (!notes.length) {
@@ -65,6 +82,8 @@ pendingFont = savedPrefs.font || "sans";
     ui.renderNoteDetails(filtered.find(n => n.id === activeNoteId));
   }
 
+  ui.renderTagLinks(notes);
+
   // Save initial notes layout
   notesViewHTML = document.querySelector("#appContent").innerHTML;
 
@@ -73,7 +92,6 @@ pendingFont = savedPrefs.font || "sans";
     themes.applyTheme(prefs.theme);
     themes.applyFont(prefs.font);
   }
-
   setupEventListeners();
 });
 
@@ -93,9 +111,14 @@ const getFinalFilteredNotes = () => {
   // Tag filter
   if (selectedTag) {
     filtered = filtered.filter(note =>
-      note.tags.includes(selectedTag)
+      note.tags.some(tag => tag.toLowerCase() === selectedTag.toLowerCase())
     );
   }
+
+  // 4️⃣ Category filter
+if (selectedCategory) {
+  filtered = filtered.filter(note => note.category === selectedCategory);
+}
 
   // Search filter
   if (searchQuery.trim()) {
@@ -516,6 +539,9 @@ const setupEventListeners = () => {
   document.querySelector("#saveNoteBtn").addEventListener("click", () => {
     const title = document.querySelector("#noteTitle").textContent.trim();
     const tagsRaw = document.querySelector("#noteTags").textContent;
+    const category = document.querySelector("#noteCategory")?.value;
+
+    
 
     const content = document
       .querySelector("#noteContent")
@@ -523,10 +549,7 @@ const setupEventListeners = () => {
       .replace(/<br>/g, "\n")
       .trim();
 
-    const tags = tagsRaw
-      .split(",")
-      .map(t => t.trim())
-      .filter(Boolean);
+    const tags = normalizeTags(tagsRaw.split(","));
 
     notes = notes.map(note =>
       note.id === activeNoteId
@@ -535,6 +558,7 @@ const setupEventListeners = () => {
             title,
             content,
             tags,
+            category,
             lastEdited: new Date().toISOString(),
           }
         : note
@@ -546,6 +570,10 @@ const setupEventListeners = () => {
 
     ui.renderAllNotes(filtered, activeNoteId);
     ui.renderNoteDetails(notes.find(n => n.id === activeNoteId));
+
+    ui.renderTagLinks(notes);
+
+    setupEventListeners();
   });
 
 
@@ -577,6 +605,9 @@ const setupEventListeners = () => {
     } else {
       ui.clearEditor();
     }
+
+    ui.renderTagLinks(notes);
+    setupEventListeners();
   });
 
 
@@ -628,6 +659,9 @@ const setupEventListeners = () => {
         switchView(isNowArchived ? "archived" : "all");
       }
     );
+
+    ui.renderTagLinks(notes);
+    setupEventListeners();
   });
 
 
@@ -691,4 +725,32 @@ const setupEventListeners = () => {
       }
     });
   });
+
+  // ===============================
+// CATEGORY FILTERING
+// ===============================
+const categoryButtons = document.querySelectorAll(".category-link");
+
+categoryButtons.forEach(btn => {
+  btn.addEventListener("click", () => {
+
+    const category = btn.dataset.category;
+
+    selectedCategory = selectedCategory === category ? null : category;
+
+    categoryButtons.forEach(b => b.classList.remove("active-category"));
+    if (selectedCategory) btn.classList.add("active-category");
+
+    const filtered = getFinalFilteredNotes();
+    activeNoteId = filtered[0]?.id || null;
+
+    ui.renderAllNotes(filtered, activeNoteId);
+
+    if (activeNoteId) {
+      ui.renderNoteDetails(filtered.find(n => n.id === activeNoteId));
+    } else {
+      ui.clearEditor();
+    }
+  });
+});
 };

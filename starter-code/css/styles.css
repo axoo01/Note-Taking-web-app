@@ -50,6 +50,7 @@
   --text-muted: var(--neutral-500);
   --tag-bg: var(--neutral-200);
   --tag-bg-active: var(--neutral-200);
+  --category-color: var(--blue-50);
   --secondary-btn: var(--neutral-100);
 
   --primary: var(--blue-500);
@@ -68,6 +69,7 @@ html[data-theme="dark"] {
 
   --tag-bg: var(--neutral-700);
   --tag-bg-active: var(--neutral-600);
+  --category-color: #0f172a;
 
   --primary: var(--blue-500);
   --primary-hover: var(--blue-700);
@@ -201,15 +203,40 @@ button {
   background: var(--surface-muted);
 }
 
-.sidebar__tags h2 {
-  margin: 0 0 1rem;
-  font-size: 1.5rem;
+.sidebar__tags {
+  display: flex;
+  flex-direction: column;
+
+  max-height: 100%;
+  overflow: hidden;
+}
+
+.sidebar__tags h3 {
+  margin: 0;
+  margin-bottom: 0.8rem;
+  font-size: 1.2rem;
   font-weight: 500;
   color: var(--text-secondary);
 }
 
 .tag-links {
   display: grid;
+  border-bottom: 1px solid var(--border-color);
+  overflow-y: auto;
+  max-height: 30rem;
+  margin-bottom: 1rem;
+}
+.tag-links::-webkit-scrollbar {
+  width: 0px;
+}
+.tag-links:hover::-webkit-scrollbar {
+  width: 6px;
+}
+
+
+.tag-links::-webkit-scrollbar-thumb {
+  background: var(--neutral-300);
+  border-radius: 999px;
 }
 .active-tag {
   background: var(--surface-muted);
@@ -271,6 +298,10 @@ button {
   background: transparent;
   color: var(--text-primary);
 }
+.searchbar input:focus {
+  outline: none;
+  box-shadow: none;
+}
 
 .searchbar input::placeholder {
   color: var(--text-muted);
@@ -311,6 +342,10 @@ button {
   content: "Enter a title...";
   color: var(--text-muted);
   font-size: 1.5rem;
+}
+#noteTags:empty:before {
+  content: "Add tags... ex(dev, react)";
+  color: var(--text-muted);
 }
 
 .notes-column {
@@ -429,7 +464,7 @@ button {
 .note-meta {
   display: grid;
   gap: 0.9rem;
-  padding-bottom: 1.5rem;
+  padding-bottom: 0.7rem;
   border-bottom: 1px solid var(--border-color);
   flex-shrink: 0;
 }
@@ -437,7 +472,7 @@ button {
 .note-meta__row {
   display: grid;
   grid-template-columns: 120px 1fr;
-  gap: 1rem;
+  gap: 2rem;
   align-items: center;
 }
 
@@ -450,6 +485,56 @@ button {
 
 .note-meta__value {
   color: var(--text-primary);
+}
+.category-badge {
+  background: var(--category-color);
+  color: var(--blue-500);
+  padding: 6px 6px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+}
+
+.category-links {
+  margin-top: 1rem;
+  display: flex;
+  justify-content: flex-start;
+  margin-left: 1rem;
+  gap: 1rem;
+  
+}
+
+.category-link {
+  min-height: 25px;
+  display: flex;
+  align-items: center;
+  font-size: 1rem;
+
+  padding: 0.3rem 0.6rem;
+  border-radius: 8px;
+
+  color: var(--text-primary);
+}
+
+
+.category-link {
+  border: 1px solid var(--border-color);
+  color: var(--blue-500);
+}
+
+
+.category-link.active-category {
+  border: none;
+  background: var(--category-color);
+}
+
+#noteCategory {
+  width: 50%;
+  height: 26px;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  background: var(--surface-bg);
+  color: var(--text-primary);
+  padding: 0 0.5rem;
 }
 
 .note-body {
@@ -475,6 +560,14 @@ button {
 .note-body::-webkit-scrollbar-thumb {
   background: var(--neutral-300);
   border-radius: 999px;
+}
+.note-body:focus{
+  outline: 1px solid var(--border-color);
+  box-shadow: none;
+}
+.note-body:empty::before{
+  content: "Start typing your notes...";
+  color: var(--text-muted);
 }
 
 .note-body p {
@@ -541,7 +634,7 @@ button:focus-visible,
 a:focus-visible,
 input:focus-visible,
 .note-card:focus-visible {
-  outline: 2px solid var(--blue-500);
+  outline: 2px solid var(--border-color);
   outline-offset: 2px;
 }
 
@@ -776,7 +869,12 @@ input:focus-visible,
   margin-top: 2rem;
 }
 
-
+#noteTitle:focus,
+#noteTags:focus,
+.searchbar input:focus {
+  outline: none;
+  box-shadow: none;
+}
 
 
 @media (max-width: 860px) {

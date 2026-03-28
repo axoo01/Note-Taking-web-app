@@ -29,6 +29,27 @@ export const formatDate = (isoString) => {
   });
 };
 
+export const renderTagLinks = (notes) => {
+
+  const container = document.querySelector(".tag-links");
+  if (!container) return;
+
+  const allTags = new Set();
+
+  notes.forEach(note => {
+    note.tags.forEach(tag => allTags.add(tag));
+  });
+
+  container.innerHTML = [...allTags]
+    .map(tag => `
+      <button class="tag-link" data-tag="${tag}">
+        <img src="./assets/images/icon-tag.svg" class="theme-icon" data-icon="icon-tag"/>
+        <span>${tag}</span>
+      </button>
+    `)
+    .join("");
+};
+
 export const renderNote = (note, isActive = false) => {
   return `
     <article 
@@ -39,7 +60,13 @@ export const renderNote = (note, isActive = false) => {
       <h3>${note.title}</h3>
 
       <div class="note-card__tags">
+
+        ${note.category 
+          ? `<span class="category-badge">${note.category}</span>` 
+          : ""}
+
         ${note.tags.map(tag => `<span class="tag-badge">${tag}</span>`).join("")}
+
       </div>
 
       <p>${formatDate(note.lastEdited)}</p>
@@ -71,6 +98,12 @@ export const renderNoteDetails = (note) => {
     } else {
       if (archiveText) archiveText.textContent = "Archive Note";
       if (archiveIcon) archiveIcon.src = "./assets/images/icon-archive.svg";
+    }
+
+    const categorySelect = document.querySelector("#noteCategory");
+
+    if (categorySelect) {
+      categorySelect.value = note.category || "";
     }
 };
 
