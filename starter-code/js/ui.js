@@ -1,3 +1,4 @@
+import { updateIcons } from "./themes.js";
 let elements = {};
 
 export const cacheElements = () => {
@@ -66,12 +67,15 @@ export const renderNoteDetails = (note) => {
   const archiveIcon = document.querySelector("#archiveIcon");
 
     if (note.isArchived) {
-      if (archiveText) archiveText.textContent = "Restore Note";
-      if (archiveIcon) archiveIcon.src = "./assets/images/icon-restore.svg"; 
+    if (archiveText) archiveText.textContent = "Restore Note";
+      if (archiveIcon) archiveIcon.dataset.icon = "icon-restore";
     } else {
       if (archiveText) archiveText.textContent = "Archive Note";
-      if (archiveIcon) archiveIcon.src = "./assets/images/icon-archive.svg";
+      if (archiveIcon) archiveIcon.dataset.icon = "icon-archive";
     }
+
+    const currentTheme = document.documentElement.getAttribute("data-theme");
+    updateIcons(currentTheme);
 };
 
 // Clear editor for new note

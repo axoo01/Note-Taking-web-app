@@ -453,7 +453,7 @@ button {
 }
 
 .note-body {
-  padding: 1.5rem 0;
+  padding: 1.5rem 1rem;
   flex: 1;
   min-height: 0;
   overflow-y: auto;
