@@ -19,6 +19,23 @@ let currentScreen = "notes"; // Ui screen state"notes" | "settings"
 
 
 // ===============================
+// HELPERS
+// ===============================
+
+const updateToolbarState = () => {
+  const actions = ["bold", "italic", "underline"];
+
+  actions.forEach(action => {
+    const btn = document.querySelector(`[data-action="${action}"]`);
+    if (!btn) return;
+
+    const isActive = document.queryCommandState(action);
+    btn.classList.toggle("active", isActive);
+  });
+};
+
+
+// ===============================
 // APP INITIALIZATION
 // ===============================
 document.addEventListener("DOMContentLoaded", async () => {
@@ -691,4 +708,24 @@ const setupEventListeners = () => {
       }
     });
   });
+
+    document.addEventListener("click", (e) => {
+      const btn = e.target.closest("[data-action]");
+      if (!btn) return;
+
+      const action = btn.dataset.action;
+
+      document.execCommand(action, false, null);
+
+      updateToolbarState();
+    });
+  const toolbar = document.querySelector(".editor-toolbar");
+
+if (toolbar) {
+  toolbar.addEventListener("mousedown", (e) => {
+    e.preventDefault();
+  });
+}
+
+document.addEventListener("selectionchange", updateToolbarState);
 };
