@@ -21,6 +21,7 @@ let currentScreen = "notes"; // Ui screen state"notes" | "settings"
 // ===============================
 // APP INITIALIZATION
 // ===============================
+
 document.addEventListener("DOMContentLoaded", async () => {
   console.log("App started");
 
@@ -40,6 +41,43 @@ pendingFont = savedPrefs.font || "sans";
   ui.cacheElements();
 
   notes = storage.loadNotes();
+
+  const params = new URLSearchParams(window.location.search);
+  const sharedNoteId = params.get("note");
+
+if (sharedNoteId) {
+  const sharedNote = notes.find(n => n.id === sharedNoteId);
+
+  if (!sharedNote) {
+    ui.showToast("Shared note not found", "Back", () => {
+      window.location.href = "/";
+    });
+  } else {
+    activeNoteId = sharedNote.id;
+
+    ui.renderAllNotes([sharedNote], sharedNote.id);
+    ui.renderNoteDetails(sharedNote);
+
+    enableReadOnlyMode();
+
+    ui.showToast("Viewing shared note", "Back", () => {
+      window.location.href = "/";
+    });
+  }
+
+  return;
+}
+
+
+const enableReadOnlyMode = () => {
+  document.querySelector("#noteTitle").contentEditable = false;
+  document.querySelector("#noteContent").contentEditable = false;
+  document.querySelector("#noteTags").contentEditable = false;
+
+  document.querySelector("#saveNoteBtn").style.display = "none";
+  document.querySelector("#archiveBtn").style.display = "none";
+  document.querySelector("#deleteBtn").style.display = "none";
+};
 
   // If empty → load from data.json
   if (!notes.length) {
@@ -691,4 +729,17 @@ const setupEventListeners = () => {
       }
     });
   });
+
+
+  document.querySelector("#shareBtn").addEventListener("click", () => {
+  if (!activeNoteId) return;
+
+  const shareUrl = `${window.location.origin}${window.location.pathname}?note=${activeNoteId}`;
+
+  navigator.clipboard.writeText(shareUrl);
+
+  ui.showToast("Link copied!", "Open", () => {
+    window.open(shareUrl, "_blank");
+  });
+});
 };
