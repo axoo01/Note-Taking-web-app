@@ -252,7 +252,7 @@ button {
 .topbar__actions {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 0.5rem;
 }
 
 .searchbar {
@@ -535,6 +535,10 @@ button {
 
 .side-action-btn + .side-action-btn {
   margin-top: 1rem;
+}
+.share-image{
+  width: 2.2rem;
+  height: 2.2rem;
 }
 
 button:focus-visible,
